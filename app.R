@@ -163,7 +163,8 @@ ui <- fluidPage(
                                         selected = "Black Bear"),
                             checkboxGroupInput("forests",
                                                h3("Choose your Forest"),
-                                               choices = list("South Hammond", 
+                                               choices = list("All Forests",
+                                                              "South Hammond", 
                                                               "Donnerville", 
                                                               "Beaver Creek", 
                                                               "Whippoorwill Corners", 
@@ -422,42 +423,88 @@ server <- function(input, output){
   #Number of Detections per Species per Forest part #2
   output$speciesdetect <- renderPlotly({
     
-    choices<-c(input$forests)
-    data<-newData %>% filter(Forest %in% choices)
-    study<-reactive(switch(input$spec,
-                           "All Mammals" = data,
-                           "White-tailed Deer" = data %>% filter(Species == "White-tailed Deer"),
-                           "Chipmunk" = data %>% filter(Species == "Chipmunk"),
-                           "Cottontail Rabbit" = data %>% filter(Species == "Cottontail Rabbit"),
-                           "Coyote" = data %>% filter(Species == "Coyote"),
-                           "Fisher" = data %>% filter(Species == "Fisher"),
-                           "Raccoon" = data %>% filter(Species == "Raccoon"),
-                           "Red Squirrel" = data %>% filter(Species == "Red Squirrel"),
-                           "Gray Squirrel" = data %>% filter(Species == "Gray Squirrel"),
-                           "Black Bear" = data %>% filter(Species == "Black Bear"),
-                           "Red Fox" = data %>% filter(Species == "Red Fox"),
-                           "Porcupine" = data %>% filter(Species == "Porcupine"),
-                           "Bobcat" = data %>% filter(Species == "Bobcat"),
-                           "Weasel" = data %>% filter(Species == "Weasel"),
-                           "Striped Skunk" = data %>% filter(Species == "Striped Skunk"),
-                           "Flying Squirrel" = data %>% filter(Species == "Flying Squirrel"),
-                           "Snowshoe Hare" = data %>% filter(Species == "Snowshoe Hare"),
-                           "River Otter" = data %>% filter(Species == "River Otter"),
-                           "Mink" = data %>% filter(Species == "Mink"),
-                           "Other Small Mammal" = data %>% filter(Species == "Other Small Mammal"),
-                           "Opossum" = data %>% filter(Species == "Opposum"))
-    )
+    if("All Forests" %in% input$forests){
+      data<-newData
+      study<-reactive(switch(input$spec,
+                             "All Mammals" = data,
+                             "White-tailed Deer" = data %>% filter(Species == "White-tailed Deer"),
+                             "Chipmunk" = data %>% filter(Species == "Chipmunk"),
+                             "Cottontail Rabbit" = data %>% filter(Species == "Cottontail Rabbit"),
+                             "Coyote" = data %>% filter(Species == "Coyote"),
+                             "Fisher" = data %>% filter(Species == "Fisher"),
+                             "Raccoon" = data %>% filter(Species == "Raccoon"),
+                             "Red Squirrel" = data %>% filter(Species == "Red Squirrel"),
+                             "Gray Squirrel" = data %>% filter(Species == "Gray Squirrel"),
+                             "Black Bear" = data %>% filter(Species == "Black Bear"),
+                             "Red Fox" = data %>% filter(Species == "Red Fox"),
+                             "Porcupine" = data %>% filter(Species == "Porcupine"),
+                             "Bobcat" = data %>% filter(Species == "Bobcat"),
+                             "Weasel" = data %>% filter(Species == "Weasel"),
+                             "Striped Skunk" = data %>% filter(Species == "Striped Skunk"),
+                             "Flying Squirrel" = data %>% filter(Species == "Flying Squirrel"),
+                             "Snowshoe Hare" = data %>% filter(Species == "Snowshoe Hare"),
+                             "River Otter" = data %>% filter(Species == "River Otter"),
+                             "Mink" = data %>% filter(Species == "Mink"),
+                             "Other Small Mammal" = data %>% filter(Species == "Other Small Mammal"),
+                             "Opossum" = data %>% filter(Species == "Opossum"))
+      )
+      
+      validate(
+        need(nrow(study()) > 0, "Oh no! Looks like we did not detect that mammal here.")
+      )
+      
+      p<-ggplot(study(), aes(Forest)) +
+        geom_histogram(stat = "count", position = "dodge", fill = '#165970', colour = '#543b1f') +
+        theme_bw() +
+        xlab("Forest") +
+        ylab("Number of Detections") +
+        theme(axis.text.x = element_text(angle = 90, size = 10, vjust = 0.5)) +
+        labs(title = "Number of Species Detections per Forest") +
+        theme(plot.title = element_text(hjust=0.5))
+      ggplotly(p) %>% config(displayModeBar = F)
+    }
     
-    p<-ggplot(study(), aes(Forest)) +
-      geom_histogram(stat = "count", position = "dodge", fill = '#165970', colour = '#543b1f') +
-      theme_bw() +
-      xlab("Forest") +
-      ylab("Number of Detections") +
-      theme(axis.text.x = element_text(angle = 90, size = 10, vjust = 0.5)) +
-      labs(title = "Number of Species Detections per Forest") +
-      theme(plot.title = element_text(hjust=0.5))
-    ggplotly(p) %>% config(displayModeBar = F)
-    
+    else{
+      choices<-c(input$forests)
+      data<-newData %>% filter(Forest %in% choices)
+      study<-reactive(switch(input$spec,
+                             "All Mammals" = data,
+                             "White-tailed Deer" = data %>% filter(Species == "White-tailed Deer"),
+                             "Chipmunk" = data %>% filter(Species == "Chipmunk"),
+                             "Cottontail Rabbit" = data %>% filter(Species == "Cottontail Rabbit"),
+                             "Coyote" = data %>% filter(Species == "Coyote"),
+                             "Fisher" = data %>% filter(Species == "Fisher"),
+                             "Raccoon" = data %>% filter(Species == "Raccoon"),
+                             "Red Squirrel" = data %>% filter(Species == "Red Squirrel"),
+                             "Gray Squirrel" = data %>% filter(Species == "Gray Squirrel"),
+                             "Black Bear" = data %>% filter(Species == "Black Bear"),
+                             "Red Fox" = data %>% filter(Species == "Red Fox"),
+                             "Porcupine" = data %>% filter(Species == "Porcupine"),
+                             "Bobcat" = data %>% filter(Species == "Bobcat"),
+                             "Weasel" = data %>% filter(Species == "Weasel"),
+                             "Striped Skunk" = data %>% filter(Species == "Striped Skunk"),
+                             "Flying Squirrel" = data %>% filter(Species == "Flying Squirrel"),
+                             "Snowshoe Hare" = data %>% filter(Species == "Snowshoe Hare"),
+                             "River Otter" = data %>% filter(Species == "River Otter"),
+                             "Mink" = data %>% filter(Species == "Mink"),
+                             "Other Small Mammal" = data %>% filter(Species == "Other Small Mammal"),
+                             "Opossum" = data %>% filter(Species == "Opossum"))
+      )
+      
+      validate(
+        need(nrow(study()) > 0, "Oh no! Looks like we did not detect that mammal here.")
+      )
+      
+      p<-ggplot(study(), aes(Forest)) +
+        geom_histogram(stat = "count", position = "dodge", fill = '#165970', colour = '#543b1f') +
+        theme_bw() +
+        xlab("Forest") +
+        ylab("Number of Detections") +
+        theme(axis.text.x = element_text(angle = 90, size = 10, vjust = 0.5)) +
+        labs(title = "Number of Species Detections per Forest") +
+        theme(plot.title = element_text(hjust=0.5))
+      ggplotly(p) %>% config(displayModeBar = F)
+    }
     
     
   })
@@ -476,6 +523,7 @@ server <- function(input, output){
                                      "River Otter" = "#543b1f",
                                      "Striped Skunk" = "#C6ABE1",
                                      "Snowshoe Hare" = "#39541e")) 
+      
       
       
     }
