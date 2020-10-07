@@ -5,9 +5,9 @@ account: natureupnorth
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2805269
-bundleId: 3691882
+bundleId: 3712764
 url: https://natureupnorth.shinyapps.io/NoCoWildShinyApp/
-when: 1601566057.27151
+when: 1602077879.2924
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: .RData
